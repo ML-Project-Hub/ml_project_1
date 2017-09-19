@@ -1,2 +1,1 @@
-# ml_project_1
-First Class Assignment in ML
+# ML-PA1
