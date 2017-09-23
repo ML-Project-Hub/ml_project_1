@@ -3,7 +3,7 @@
 
 # # Initialization
 
-# In[107]:
+# In[122]:
 
 import pandas as pd
 import scipy.stats as sst
@@ -43,7 +43,7 @@ print("personNumber = " + PERSON_NUMBER)
 
 # # Task 1
 
-# In[108]:
+# In[123]:
 
 def mean(df,column):
     return numpy.mean(df[column])
@@ -55,7 +55,7 @@ def stddev(df,column):
     return numpy.std(df[column])
 
 
-# In[109]:
+# In[124]:
 
 mu1 = mean(df,"CS_Score")
 mu2 = mean(df,"Research_Overhead")
@@ -87,7 +87,7 @@ print("sigma4 = " + str(sigma4))
 
 # # Task 2
 
-# In[110]:
+# In[125]:
 
 def plotter(df, column1, column2):
     return df.plot.scatter(x=column1, y=column2, style='o')
@@ -101,7 +101,7 @@ def correlation_matrix(df):
     return numpy.corrcoef(array_like_variables)
 
 
-# In[111]:
+# In[126]:
 
 covarianceMat = covariance_matrix(df[["CS_Score",
               "Research_Overhead",
@@ -118,39 +118,39 @@ print("correlationMat = ")
 print(correlationMat)
 
 
-# In[112]:
+# In[127]:
 
 plotter(df,'CS_Score',"Research_Overhead")
 
 
-# In[113]:
+# In[128]:
 
 plotter(df,'CS_Score',"Base_Pay")
 
 
-# In[114]:
+# In[129]:
 
 plotter(df,'CS_Score',"Tuition_Out_State")
 
 
-# In[115]:
+# In[130]:
 
 plotter(df,'Base_Pay',"Research_Overhead")
 
 
-# In[116]:
+# In[131]:
 
 plotter(df,'Base_Pay',"Tuition_Out_State")
 
 
-# In[117]:
+# In[132]:
 
 plotter(df,'Research_Overhead',"Tuition_Out_State")
 
 
 # # Task 3
 
-# In[120]:
+# In[133]:
 
 def univariate_pdf(df,column):
     pi = math.pi
@@ -161,7 +161,7 @@ def univariate_pdf(df,column):
     return [1/(root2pi*sigma)*e**(-1/2*((i-mu)/sigma)**2) for i in df[column]]
 
 
-# In[121]:
+# In[175]:
 
 pdf1 = univariate_pdf(df,"CS_Score")
 pdf2 = univariate_pdf(df,"Research_Overhead")
@@ -178,19 +178,16 @@ print("logLikelihood = " + str(independent_log_likelihood))
 
 
 
-# In[ ]:
+# In[176]:
+
+from scipy.stats import multivariate_normal
+var = multivariate_normal(mean=[mu1,mu2,mu3,mu4], cov=covarianceMat, allow_singular=True)
+multivariate_log_likelihood = sum([numpy.log(var.pdf(list(df.ix[i])[2:6])) for i in range(49)])
 
 
+# In[177]:
 
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
+print("BNlogLikelihood = " + str(multivariate_log_likelihood))
 
 
 # In[ ]:
