@@ -1,4 +1,6 @@
-# coding: utf-8
+## coding: utf-8
+## Python 2.7
+
 
 # # Initialization
 
@@ -34,7 +36,6 @@ df.columns = ["Rank",
               "G_TTRatio",
               "G_TTLRatio"]
 
-print("Group members\n")
 print("UBITName = {}".format(UBITNAME1))
 print("personNumber = {}\n".format(PERSON_NUMBER1))
 print("UBITName = {}".format(UBITNAME2))
@@ -59,10 +60,10 @@ mu1 = mean(df,"CS_Score")
 mu2 = mean(df,"Research_Overhead")
 mu3 = mean(df,"Base_Pay")
 mu4 = mean(df,"Tuition_Out_State")
-print("mu1 = {:.3f}".format(mu1))
-print("mu2 = {:.3f}".format(mu2))
-print("mu3 = {:.3f}".format(mu3))
-print("mu4 = {:.3f}".format(mu4))
+print("mu1 = {:0.3f}".format(mu1))
+print("mu2 = {:0.3f}".format(mu2))
+print("mu3 = {:0.3f}".format(mu3))
+print("mu4 = {:0.3f}".format(mu4))
 print("")
 var1 = variance(df,"CS_Score")
 var2 = variance(df,"Research_Overhead")
@@ -81,7 +82,7 @@ print("sigma1 = {:0.3f}".format(sigma1))
 print("sigma2 = {:0.3f}".format(sigma2))
 print("sigma3 = {:0.3f}".format(sigma3))
 print("sigma4 = {:0.3f}".format(sigma4))
-
+print("")
 
 # # Task 2
 
@@ -121,7 +122,7 @@ correlationMat = numpy.matrix(correlation_matrix(df[["CS_Score",
               "Tuition_Out_State",]]))
 print("correlationMat = ")
 print(correlationMat)
-
+print("")
 
 # # Task 3
 
@@ -141,8 +142,8 @@ pdf4 = univariate_pdf(df,"Tuition_Out_State")
 
 pdf_univariate = [pdf1[i]*pdf2[i]*pdf3[i]*pdf4[i] for i in range(49)]
 independent_log_likelihood = sum(numpy.log(pdf_univariate))
-print("logLikelihood = {:.3f}".format(independent_log_likelihood))
-
+print("logLikelihood = {:0.3f}".format(independent_log_likelihood))
+print("")
 
 def multivariate_pdf(df,covarianceMat,no_of_columns):
     inverse_covarianceMat = covarianceMat**-1
@@ -155,7 +156,7 @@ def multivariate_pdf(df,covarianceMat,no_of_columns):
         x = numpy.matrix(multivariate_list[i].tolist()[0]).T
         coefficient = (1/((math.pi*2)**2*math.sqrt(determinant_covarianceMat)))
         pdf.append(math.e**(-1/2.0*((x-mu).T*inverse_covarianceMat*(x-mu)).tolist()[0][0])*coefficient)
-        return pdf
+    return pdf
 
 multivariate_log_likelihood = sum([numpy.log(i) for i in multivariate_pdf(df,covarianceMat,4)])
-print("MultivariatelogLikelihood = {:.3f}".format(multivariate_log_likelihood))
+print("multivariatelogLikelihood = {:0.3f}".format(multivariate_log_likelihood))
