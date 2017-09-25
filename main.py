@@ -160,3 +160,24 @@ def multivariate_pdf(df,covarianceMat,no_of_columns):
 
 multivariate_log_likelihood = sum([numpy.log(i) for i in multivariate_pdf(df,covarianceMat,4)])
 print("multivariatelogLikelihood = {:0.3f}".format(multivariate_log_likelihood))
+print("")
+
+BNgraph = [[1,0,0,0],[1,1,0,0],[0,0,1,0],[1,0,0,1]]
+print("BNgraph = ")
+print(numpy.matrix(BNgraph))
+print("")
+
+def BNlogLikelihood(list1,list2):
+    A = numpy.matrix([[len(list1),sum(list1)],[sum(list1),sum([i**2 for i in list1])]]).I
+    Y = numpy.matrix([sum(list2),sum([i*j for i,j in zip(list1,list2)])]).T
+    [[b0],[b1]] = (A*Y).tolist()
+    variance = sum([(b0 + (b1*i) - j)**2 for i,j in zip(list1,list2)])/len(list1)
+    return (-1/2.0*numpy.log(2*math.pi*variance) -len(list1)/2.0)
+    
+def univariate_loglikelihood(pdf1,pdf2):
+    pdf_univariate = [pdf1[i]*pdf2[i] for i in range(49)]
+    return sum(numpy.log(pdf_univariate))
+
+BNLogLikelihoodFinal = BNlogLikelihood(list(df["CS_Score"]),list(df["Research_Overhead"])) + BNlogLikelihood(list(df["CS_Score"]),list(df["Tuition_Out_State"])) + univariate_loglikelihood(pdf1,pdf3)
+
+print("BNlogLikelihood = {:0.3f}".format(BNLogLikelihoodFinal))
