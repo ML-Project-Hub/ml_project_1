@@ -59,28 +59,28 @@ mu1 = mean(df,"CS_Score")
 mu2 = mean(df,"Research_Overhead")
 mu3 = mean(df,"Base_Pay")
 mu4 = mean(df,"Tuition_Out_State")
-print("mu1 = " + str(mu1))
-print("mu2 = " + str(mu2))
-print("mu3 = " + str(mu3))
-print("mu4 = " + str(mu4))
+print("mu1 = {:.3f}".format(mu1))
+print("mu2 = {:.3f}".format(mu2))
+print("mu3 = {:.3f}".format(mu3))
+print("mu4 = {:.3f}".format(mu4))
 print("")
 var1 = variance(df,"CS_Score")
 var2 = variance(df,"Research_Overhead")
 var3 = variance(df,"Base_Pay")
 var4 = variance(df,"Tuition_Out_State")
-print("var1 = " + str(var1))
-print("var2 = " + str(var2))
-print("var3 = " + str(var3))
-print("var4 = " + str(var4))
+print("var1 = {:0.3f}".format(var1))
+print("var2 = {:0.3f}".format(var2))
+print("var3 = {:0.3f}".format(var3))
+print("var4 = {:0.3f}".format(var4))
 print("")
 sigma1 = stddev(df,"CS_Score")
 sigma2 = stddev(df,"Research_Overhead")
 sigma3 = stddev(df,"Base_Pay")
 sigma4 = stddev(df,"Tuition_Out_State")
-print("sigma1 = " + str(sigma1))
-print("sigma2 = " + str(sigma2))
-print("sigma3 = " + str(sigma3))
-print("sigma4 = " + str(sigma4))
+print("sigma1 = {:0.3f}".format(sigma1))
+print("sigma2 = {:0.3f}".format(sigma2))
+print("sigma3 = {:0.3f}".format(sigma3))
+print("sigma4 = {:0.3f}".format(sigma4))
 
 
 # # Task 2
@@ -141,7 +141,7 @@ pdf4 = univariate_pdf(df,"Tuition_Out_State")
 
 pdf_univariate = [pdf1[i]*pdf2[i]*pdf3[i]*pdf4[i] for i in range(49)]
 independent_log_likelihood = sum(numpy.log(pdf_univariate))
-print("logLikelihood = " + str(independent_log_likelihood))
+print("logLikelihood = {:.3f}".format(independent_log_likelihood))
 
 
 def multivariate_pdf(df,covarianceMat,no_of_columns):
@@ -158,4 +158,4 @@ def multivariate_pdf(df,covarianceMat,no_of_columns):
         return pdf
 
 multivariate_log_likelihood = sum([numpy.log(i) for i in multivariate_pdf(df,covarianceMat,4)])
-print("MultivariatelogLikelihood = " + str(multivariate_log_likelihood))
+print("MultivariatelogLikelihood = {:.3f}".format(multivariate_log_likelihood))
