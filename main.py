@@ -1,15 +1,15 @@
-
 # coding: utf-8
 
 # # Initialization
 
-# In[1]:
-
 import pandas as pd
-import scipy.stats as sst
-import scipy
 import numpy
 import math
+
+## Reference : https://stackoverflow.com/questions/22222818/how-to-printing-numpy-array-with-3-decimal-places
+numpy.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
+
+#To plot the graphs Inline (NOTE: Only works in IDEs)
 #from IPython import get_ipython
 #get_ipython().run_line_magic('matplotlib', 'inline')
 
@@ -45,8 +45,6 @@ print("personNumber = {}\n".format(PERSON_NUMBER3))
 
 # # Task 1
 
-# In[2]:
-
 def mean(df,column):
     return numpy.mean(df[column])
 
@@ -56,8 +54,6 @@ def variance(df,column):
 def stddev(df,column):
     return numpy.std(df[column])
 
-
-# In[3]:
 
 mu1 = mean(df,"CS_Score")
 mu2 = mean(df,"Research_Overhead")
@@ -89,10 +85,19 @@ print("sigma4 = " + str(sigma4))
 
 # # Task 2
 
-# In[4]:
+#Input the dataframe and two columns to plot the pairwise data
+def plotter(df, column1, column2):
+    return df.plot.scatter(x=column1, y=column2, style='o')
 
-#def plotter(df, column1, column2):
-#    return df.plot.scatter(x=column1, y=column2, style='o')
+#These plots only work in an IDE for python:
+
+#plotter(df,'CS_Score',"Research_Overhead")
+#plotter(df,'CS_Score',"Base_Pay")
+#plotter(df,'CS_Score',"Tuition_Out_State")
+#plotter(df,'Base_Pay',"Research_Overhead")
+#plotter(df,'Base_Pay',"Tuition_Out_State")
+#plotter(df,'Research_Overhead',"Tuition_Out_State")
+
 
 def covariance_matrix(df):
     array_like_variables = df.as_matrix().T
@@ -102,8 +107,6 @@ def correlation_matrix(df):
     array_like_variables = df.as_matrix().T
     return numpy.corrcoef(array_like_variables)
 
-
-# In[5]:
 
 covarianceMat = numpy.matrix(covariance_matrix(df[["CS_Score",
               "Research_Overhead",
@@ -120,24 +123,8 @@ print("correlationMat = ")
 print(correlationMat)
 
 
-# In[6]:
-
-#plotter(df,'CS_Score',"Research_Overhead")
-
-#plotter(df,'CS_Score',"Base_Pay")
-
-#plotter(df,'CS_Score',"Tuition_Out_State")
-
-#plotter(df,'Base_Pay',"Research_Overhead")
-
-#plotter(df,'Base_Pay',"Tuition_Out_State")
-
-#plotter(df,'Research_Overhead',"Tuition_Out_State")
-
-
 # # Task 3
 
-# In[30]:
 
 def univariate_pdf(df,column):
     pi = numpy.pi
@@ -157,19 +144,17 @@ independent_log_likelihood = sum(numpy.log(pdf_univariate))
 print("logLikelihood = " + str(independent_log_likelihood))
 
 
-# In[29]:
-
-def multivariate_pdf(df,covarianceMat,no_of_columns,formula=True):
-    if formula == True:
-        inverse_covarianceMat = covarianceMat**-1
-        determinant_covarianceMat = numpy.linalg.det(covarianceMat)
-        mu = numpy.matrix([mu1,mu2,mu3,mu4]).T
-        multivariate_list = [numpy.matrix(list(df.iloc[i][2:2+no_of_columns])) for i in range(49)]
-        
-        pdf = []
-        for i in range(49):
-            x = numpy.matrix(multivariate_list[i].tolist()[0]).T
-            pdf.append(math.e**(-1/2.0*((x-mu).T*inverse_covarianceMat*(x-mu)).tolist()[0][0])*(1/((math.pi*2)**2*math.sqrt(determinant_covarianceMat))))
+def multivariate_pdf(df,covarianceMat,no_of_columns):
+    inverse_covarianceMat = covarianceMat**-1
+    determinant_covarianceMat = numpy.linalg.det(covarianceMat)
+    mu = numpy.matrix([mu1,mu2,mu3,mu4]).T
+    multivariate_list = [numpy.matrix(list(df.iloc[i][2:2+no_of_columns])) for i in range(49)]
+    
+    pdf = []
+    for i in range(49):
+        x = numpy.matrix(multivariate_list[i].tolist()[0]).T
+        coefficient = (1/((math.pi*2)**2*math.sqrt(determinant_covarianceMat)))
+        pdf.append(math.e**(-1/2.0*((x-mu).T*inverse_covarianceMat*(x-mu)).tolist()[0][0])*coefficient)
         return pdf
 
 multivariate_log_likelihood = sum([numpy.log(i) for i in multivariate_pdf(df,covarianceMat,4)])
