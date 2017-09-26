@@ -1,5 +1,5 @@
 ## coding: utf-8
-## Python 2.7
+## Python 2.7.13
 
 
 # # Initialization
@@ -23,7 +23,10 @@ PERSON_NUMBER2 = "50244979"
 UBITNAME3 ="prajnaga"
 PERSON_NUMBER3 = "50244304"
 
+#Reading the excel
 df = pd.read_excel(EXCEL_LOCATION)
+
+#changing the column names
 df.columns = ["Rank",
               "Name",
               "CS_Score",
@@ -36,6 +39,7 @@ df.columns = ["Rank",
               "G_TTRatio",
               "G_TTLRatio"]
 
+#Printing out the UBITName and Person Number
 print("UBITName = {}".format(UBITNAME1))
 print("personNumber = {}\n".format(PERSON_NUMBER1))
 print("UBITName = {}".format(UBITNAME2))
@@ -45,7 +49,6 @@ print("personNumber = {}\n".format(PERSON_NUMBER3))
 
 
 # # Task 1
-
 def mean(df,column):
     return numpy.mean(df[column])
 
@@ -55,7 +58,7 @@ def variance(df,column):
 def stddev(df,column):
     return numpy.std(df[column])
 
-
+#Mean
 mu1 = mean(df,"CS_Score")
 mu2 = mean(df,"Research_Overhead")
 mu3 = mean(df,"Base_Pay")
@@ -65,6 +68,8 @@ print("mu2 = {:0.3f}".format(mu2))
 print("mu3 = {:0.3f}".format(mu3))
 print("mu4 = {:0.3f}".format(mu4))
 print("")
+
+#Variance
 var1 = variance(df,"CS_Score")
 var2 = variance(df,"Research_Overhead")
 var3 = variance(df,"Base_Pay")
@@ -74,6 +79,8 @@ print("var2 = {:0.3f}".format(var2))
 print("var3 = {:0.3f}".format(var3))
 print("var4 = {:0.3f}".format(var4))
 print("")
+
+#Standard Deviation
 sigma1 = stddev(df,"CS_Score")
 sigma2 = stddev(df,"Research_Overhead")
 sigma3 = stddev(df,"Base_Pay")
@@ -90,8 +97,7 @@ print("")
 def plotter(df, column1, column2):
     return df.plot.scatter(x=column1, y=column2, style='o')
 
-#These plots only work in an IDE for python:
-
+###These plots only work in an IDE for python:
 #plotter(df,'CS_Score',"Research_Overhead")
 #plotter(df,'CS_Score',"Base_Pay")
 #plotter(df,'CS_Score',"Tuition_Out_State")
@@ -108,7 +114,7 @@ def correlation_matrix(df):
     array_like_variables = df.as_matrix().T
     return numpy.corrcoef(array_like_variables)
 
-
+#Covariance Matrix
 covarianceMat = numpy.matrix(covariance_matrix(df[["CS_Score",
               "Research_Overhead",
               "Base_Pay",
@@ -116,6 +122,8 @@ covarianceMat = numpy.matrix(covariance_matrix(df[["CS_Score",
 print("covarianceMat = ")
 print(covarianceMat)
 print("")
+
+#Correlation Matrix
 correlationMat = numpy.matrix(correlation_matrix(df[["CS_Score",
               "Research_Overhead",
               "Base_Pay",
@@ -124,9 +132,10 @@ print("correlationMat = ")
 print(correlationMat)
 print("")
 
+
 # # Task 3
 
-
+#Calculating Univariate PDF
 def univariate_pdf(df,column):
     pi = numpy.pi
     sigma = stddev(df,column)
@@ -140,11 +149,15 @@ pdf2 = univariate_pdf(df,"Research_Overhead")
 pdf3 = univariate_pdf(df,"Base_Pay")
 pdf4 = univariate_pdf(df,"Tuition_Out_State")
 
+#Multiplying the pdf row wise
 pdf_univariate = [pdf1[i]*pdf2[i]*pdf3[i]*pdf4[i] for i in range(49)]
+
+#Taking log of samples and summing them up
 independent_log_likelihood = sum(numpy.log(pdf_univariate))
 print("logLikelihood = {:0.3f}".format(independent_log_likelihood))
 print("")
 
+#Calculating Multivariate PDF
 def multivariate_pdf(df,covarianceMat,no_of_columns):
     inverse_covarianceMat = covarianceMat**-1
     determinant_covarianceMat = numpy.linalg.det(covarianceMat)
@@ -158,26 +171,7 @@ def multivariate_pdf(df,covarianceMat,no_of_columns):
         pdf.append(math.e**(-1/2.0*((x-mu).T*inverse_covarianceMat*(x-mu)).tolist()[0][0])*coefficient)
     return pdf
 
+	
+#Taking log and summing the multivariate pdfs up
 multivariate_log_likelihood = sum([numpy.log(i) for i in multivariate_pdf(df,covarianceMat,4)])
 print("multivariatelogLikelihood = {:0.3f}".format(multivariate_log_likelihood))
-print("")
-
-BNgraph = [[1,0,0,0],[1,1,0,0],[0,0,1,0],[1,0,0,1]]
-print("BNgraph = ")
-print(numpy.matrix(BNgraph))
-print("")
-
-def BNlogLikelihood(list1,list2):
-    A = numpy.matrix([[len(list1),sum(list1)],[sum(list1),sum([i**2 for i in list1])]]).I
-    Y = numpy.matrix([sum(list2),sum([i*j for i,j in zip(list1,list2)])]).T
-    [[b0],[b1]] = (A*Y).tolist()
-    variance = sum([(b0 + (b1*i) - j)**2 for i,j in zip(list1,list2)])/len(list1)
-    return (-1/2.0*numpy.log(2*math.pi*variance) -len(list1)/2.0)
-    
-def univariate_loglikelihood(pdf1,pdf2):
-    pdf_univariate = [pdf1[i]*pdf2[i] for i in range(49)]
-    return sum(numpy.log(pdf_univariate))
-
-BNLogLikelihoodFinal = BNlogLikelihood(list(df["CS_Score"]),list(df["Research_Overhead"])) + BNlogLikelihood(list(df["CS_Score"]),list(df["Tuition_Out_State"])) + univariate_loglikelihood(pdf1,pdf3)
-
-print("BNlogLikelihood = {:0.3f}".format(BNLogLikelihoodFinal))
