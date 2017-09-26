@@ -24,6 +24,7 @@ UBITNAME3 ="prajnaga"
 PERSON_NUMBER3 = "50244304"
 
 #Reading the excel
+#IMPORTANT: This can throw, no module named xlrd ImportError. So, must install the correct version of pandas (0.20.1) or install xlrd
 df = pd.read_excel(EXCEL_LOCATION)
 
 #changing the column names
